@@ -2,7 +2,7 @@ import { getRequest, postRequest } from "./baseRequests/baseRequests";
 
 export async function login(email, password) {
   try {
-    const response = await postRequest('/login', { email, password });
+    const response = await postRequest('/auth/login', { email, password });
     return response;
   } catch (error) {
     console.error("Error logging in user:", error);
@@ -12,7 +12,7 @@ export async function login(email, password) {
 
 export async function register(name, arid_no, age, email, password, role, gender) {
   try {
-    const response = await postRequest('/register', {
+    const response = await postRequest('/auth/register', 
       name,
       arid_no,
       age,
@@ -20,7 +20,7 @@ export async function register(name, arid_no, age, email, password, role, gender
       password,
       role,
       gender
-    });
+    );
     return response;
   } catch (error) {
     console.error("Error registering user:", error);

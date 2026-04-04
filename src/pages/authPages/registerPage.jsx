@@ -12,18 +12,33 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("Player");
-  const [gender, setGender] = useState("Male");
+  const [gender, setGender] = useState("male");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Format ARID automatically: 20xx-Arid-xxxx
   const handleAridChange = (e) => {
-    let value = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, "");
-    // Automatically insert dashes after year and "ARID"
-    if (value.length > 4 && !value.includes("-ARID-")) {
-      value = `${value.slice(0, 4)}-ARID-${value.slice(4, 8)}`;
+    let value = e.target.value.replace(/[^0-9a-zA-Z]/g, "");
+
+    // Extract parts
+    let year = value.slice(0, 4);
+    let remaining = value.slice(4).replace(/^arid/i, ""); // remove ARID if user typed
+
+    let formatted = "";
+
+    if (year) formatted += year;
+    if (value.length > 4) formatted += "-Arid";
+    if (remaining) formatted += "-" + remaining.slice(0, 4);
+
+    formatted = formatted.replace(/arid/i, "Arid"); // ensure capitalized correctly
+    setArid(formatted);
+
+    // Auto-generate email
+    if (formatted.length > 0) { // full ARID: 20xx-Arid-xxxx
+      setEmail(`${formatted.toLowerCase()}@biit.edu.pk`);
+    } else {
+      setEmail(""); // clear email until ARID is complete
     }
-    setArid(value.slice(0, 13)); // Limit to 13 chars
   };
 
   const handleRegister = async (e) => {
@@ -35,10 +50,12 @@ export default function Register() {
       return;
     }
 
-    if (!/^20\d{2}-ARID-\d{4}$/.test(arid)) {
-      setErrorMessage("ARID number must be like 20xx-ARID-xxxx.");
+    if (!/^20\d{2}-Arid-\d{4}$/i.test(arid)) {
+      setErrorMessage("ARID number must be like 20xx-Arid-xxxx.");
       return;
     }
+
+    console.log({ name, arid, age, email, password, role, gender });
 
     setLoading(true);
     try {
@@ -126,6 +143,7 @@ export default function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
+            readOnly
             required
           />
 
@@ -155,9 +173,7 @@ export default function Register() {
             className="w-full p-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
             disabled={loading}
           >
-            <option>Player</option>
-            <option>Coach</option>
-            <option>Admin</option>
+            <option value='player'>Player</option>
           </select>
 
           <select
@@ -166,9 +182,9 @@ export default function Register() {
             className="w-full p-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
             disabled={loading}
           >
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
+            <option value='male'>Male</option>
+            <option value='female'>Female</option>
+            <option value='other'>Other</option>
           </select>
 
           <button

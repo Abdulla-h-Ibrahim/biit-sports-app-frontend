@@ -20,6 +20,8 @@ export default function Login() {
       if (!response || response.error) {
         throw new Error(response?.message || "Login failed: Invalid credentials");
       }
+      alert("Login successful!");
+      navigate("/");
     } catch (err) {
       if (err.response) {
         switch (err.response.status) {

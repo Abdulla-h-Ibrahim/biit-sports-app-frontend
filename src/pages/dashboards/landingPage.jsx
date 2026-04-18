@@ -1,9 +1,27 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
+
 export default function LandingPage() {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const pastEvents = [
+    { name: "Inter Dept Cricket Final", time: "10 Jan 10 AM", venue: "Ground A", desc: "Final match between CS vs SE" },
+    { name: "Football Tournament", time: "5 Jan 12 PM", venue: "Field B", desc: "League stage matches" },
+  ];
+
+  const ongoingEvents = [
+    { name: "Cricket Match", time: "Today 10 AM - 4 PM", venue: "Ground A", desc: "Live quarter-final match" },
+    { name: "Football League", time: "Today 12 PM - 6 PM", venue: "Field B", desc: "Group stage matches ongoing" },
+  ];
+
+  const upcomingEvents = [
+    { name: "Basketball Tournament", time: "20 April 2026", venue: "Court A", desc: "Knockout stage begins" },
+    { name: "Athletics Meet", time: "25 April 2026", venue: "Track Ground", desc: "Annual sports day events" },
+  ];
+
   return (
     <div className="min-h-screen relative overflow-hidden font-sans text-[#0B3D0B] bg-white">
 
@@ -58,26 +76,114 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="mt-28 px-10 grid md:grid-cols-3 gap-8 relative z-10">
-        {[
-          { title: "🏆 Smart Tournaments", desc: "Join or organize tournaments with live updates and rankings." },
-          { title: "📊 Player Analytics", desc: "Track performance, view trends, and improve your game." },
-          { title: "🤝 Community Hub", desc: "Connect with fellow athletes and form teams easily." },
-          { title: "🎯 Goals & Achievements", desc: "Set personal targets and showcase your progress." },
-          { title: "📅 Event Calendar", desc: "Never miss a match with our intuitive calendar." },
-          { title: "💬 Chat & Collaborate", desc: "Communicate seamlessly with teammates and coaches." },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="bg-green-50 bg-opacity-30 backdrop-blur-md shadow-lg border border-green-200 p-6 rounded-3xl hover:scale-105 transition duration-300"
-          >
-            <h2 className="text-xl font-bold mb-3 text-[#2E7D32]">{item.title}</h2>
-            <p className="text-gray-700">{item.desc}</p>
+      {/* Events Split Section */}
+      <section className="mt-28 px-6 relative z-10">
+
+        <h2 className="text-3xl font-bold text-center mb-10 text-[#2E7D32]">
+          📊 Events Overview
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-6">
+
+          {/* ⬅️ Past Events */}
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-300 p-4">
+            <h3 className="text-lg font-bold text-center py-2 mb-4 bg-gray-100 text-gray-700 rounded-xl">
+              🏁 Past Events
+            </h3>
+
+            <iframe
+              src="https://calendar.google.com/calendar/embed?src=PAST_CALENDAR_ID&ctz=Asia%2FKarachi"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              title="Past Events"
+            ></iframe>
           </div>
-        ))}
+
+          {/* 🔥 Ongoing Events (UNCHANGED) */}
+          <div className="bg-white rounded-3xl shadow-xl border border-green-300 p-4">
+            <h3 className="flex items-center justify-between text-lg font-bold py-2 mb-4 bg-green-100 text-[#2E7D32] rounded-xl px-4">
+              <span>🔥 Ongoing Events</span>
+
+              <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+                LIVE
+              </span>
+            </h3>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead>
+                  <tr
+                    className="border-b hover:bg-green-50 cursor-pointer"
+                  >                    <th className="py-2">Event</th>
+                    <th className="py-2">Time</th>
+                    <th className="py-2">Venue</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {ongoingEvents.map((event, index) => (
+                    <tr
+                      key={index}
+                      onClick={() => setSelectedEvent(event)}
+                      className="border-b hover:bg-green-50 cursor-pointer"
+                    >
+                      <td className="py-2">{event.name}</td>
+                      <td>{event.time}</td>
+                      <td>{event.venue}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ➡️ Upcoming Events */}
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-300 p-4">
+            <h3 className="text-lg font-bold text-center py-2 mb-4 bg-gray-100 text--700 rounded-xl">
+              🚀 Upcoming Events
+            </h3>
+
+            <iframe
+              src="https://calendar.google.com/calendar/embed?src=UPCOMING_CALENDAR_ID&ctz=Asia%2FKarachi"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              title="Upcoming Events"
+            ></iframe>
+          </div>
+
+        </div>
       </section>
 
+      {selectedEvent && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+          <div className="bg-white rounded-3xl p-6 w-[90%] max-w-md shadow-2xl relative">
+
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedEvent(null)}
+              className="absolute top-3 right-4 text-gray-500 text-xl"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold text-[#2E7D32] mb-4">
+              {selectedEvent.name}
+            </h2>
+
+            <p className="mb-2"><strong>⏰ Time:</strong> {selectedEvent.time}</p>
+            <p className="mb-2"><strong>📍 Venue:</strong> {selectedEvent.venue}</p>
+
+            {/* Optional */}
+            <button className="mt-4 w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
+              View More Details
+            </button>
+
+          </div>
+        </div>
+      )}
       <Footer />
 
       {/* Tailwind Animations */}

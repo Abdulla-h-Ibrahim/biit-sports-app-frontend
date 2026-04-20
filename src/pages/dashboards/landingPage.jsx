@@ -3,24 +3,54 @@ import { useState } from "react";
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import CustomCalendar from "../../components/CustomCalender";
 
 
 export default function LandingPage() {
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const pastEvents = [
-    { name: "Inter Dept Cricket Final", time: "10 Jan 10 AM", venue: "Ground A", desc: "Final match between CS vs SE" },
-    { name: "Football Tournament", time: "5 Jan 12 PM", venue: "Field B", desc: "League stage matches" },
+  const upcomingEvents = [
+
+    {
+      name: "AI Workshop",
+      date: "2026-04-21",
+      time: "10:00 AM",
+      venue: "Lab 1",
+    },
+    {
+      name: "A Workshop",
+      date: "2026-04-21",
+      time: "10:00 AM",
+      venue: "Lab 1",
+    },
+    {
+      name: "Hackathon",
+      date: "2026-04-25",
+      time: "2:00 PM",
+      venue: "Auditorium",
+    },
   ];
+  const pastEvents = [
+    {
+      name: "AI Workshop",
+      date: "2026-04-18",
+      time: "10:00 AM",
+      venue: "Lab 1",
+    },
+    {
+      name: "Hackathon",
+      date: "2026-04-15",
+      time: "2:00 PM",
+      venue: "Auditorium",
+    },
+  ];
+
 
   const ongoingEvents = [
     { name: "Cricket Match", time: "Today 10 AM - 4 PM", venue: "Ground A", desc: "Live quarter-final match" },
     { name: "Football League", time: "Today 12 PM - 6 PM", venue: "Field B", desc: "Group stage matches ongoing" },
   ];
 
-  const upcomingEvents = [
-    { name: "Basketball Tournament", time: "20 April 2026", venue: "Court A", desc: "Knockout stage begins" },
-    { name: "Athletics Meet", time: "25 April 2026", venue: "Track Ground", desc: "Annual sports day events" },
-  ];
+
 
   return (
     <div className="min-h-screen relative overflow-hidden font-sans text-[#0B3D0B] bg-white">
@@ -91,13 +121,15 @@ export default function LandingPage() {
               🏁 Past Events
             </h3>
 
-            <iframe
-              src="https://calendar.google.com/calendar/embed?src=PAST_CALENDAR_ID&ctz=Asia%2FKarachi"
-              width="100%"
-              height="400"
-              style={{ border: 0 }}
-              title="Past Events"
-            ></iframe>
+            <CustomCalendar
+              events={pastEvents}
+              onDateClick={(events, date) => {
+                setSelectedEvent({
+                  date,
+                  events: events.map(e => e.extendedProps),
+                });
+              }}
+            />
           </div>
 
           {/* 🔥 Ongoing Events (UNCHANGED) */}
@@ -144,13 +176,15 @@ export default function LandingPage() {
               🚀 Upcoming Events
             </h3>
 
-            <iframe
-              src="https://calendar.google.com/calendar/embed?src=UPCOMING_CALENDAR_ID&ctz=Asia%2FKarachi"
-              width="100%"
-              height="400"
-              style={{ border: 0 }}
-              title="Upcoming Events"
-            ></iframe>
+            <CustomCalendar
+              events={upcomingEvents}
+              onDateClick={(events, date) => {
+                setSelectedEvent({
+                  date,
+                  events: events.map(e => e.extendedProps),
+                });
+              }}
+            />
           </div>
 
         </div>
@@ -170,12 +204,18 @@ export default function LandingPage() {
             </button>
 
             <h2 className="text-2xl font-bold text-[#2E7D32] mb-4">
-              {selectedEvent.name}
+              Events on {selectedEvent.date}
             </h2>
 
-            <p className="mb-2"><strong>⏰ Time:</strong> {selectedEvent.time}</p>
-            <p className="mb-2"><strong>📍 Venue:</strong> {selectedEvent.venue}</p>
-
+            <div className="space-y-3">
+              {selectedEvent.events.map((e, i) => (
+                <div key={i} className="border p-3 rounded-xl">
+                  <p><strong>📌</strong> {e.name}</p>
+                  <p><strong>⏰</strong> {e.time}</p>
+                  <p><strong>📍</strong> {e.venue}</p>
+                </div>
+              ))}
+            </div>
             {/* Optional */}
             <button className="mt-4 w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
               View More Details
